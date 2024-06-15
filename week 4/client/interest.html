@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        async function clickHandler(){
+            const principal = document.getElementById("principal").value;
+            const rate = document.getElementById("rate").value;
+            const time = document.getElementById("time").value;
+
+            const res = await fetch("https://localhost:5000/interest?principal="+principal+"&rate="+rate+"&time="+time,{
+                method: 'GET',
+                headers: {
+                        'Content-Type': 'application/json'
+            },
+        });
+        const ans = res.json();
+        console.log(ans);
+
+        const interest = ans.interest;
+        const total = ans.total;
+
+        document.getElementById("interest").innerHTML=interest;
+        document.getElementById("total").innerHTML=total;
+        }
+    </script>
+</head>
+<body>
+    <input type="text" placeholder="principal" id="principal"/>
+    <input type="text" placeholder="rate" id="rate"/>
+    <input type="text" placeholder="time" id="time"/>
+
+    <button onclick="clickHandler()">Calculate interest</button>
+    <div>The interest and total are as follows</div>
+    <div id="interest"></div>
+    <div id="total"></div>
+    
+</body>
+</html>
