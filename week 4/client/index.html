@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+    <title>Document</title>
+    <script>
+        function populateDiv(){
+            const a = document.getElementById('firstNumber').value;
+            const b = document.getElementById('secondNumber').value;
+            const element = document.getElementById('finalSum');
+            element.innerHTML=parseInt(a)+parseInt(b);
+        }
+
+        async function populateDivFromServer(){
+            const a = document.getElementById('firstNumber').value;
+            const b = document.getElementById('secondNumber').value;
+            try {
+                const response = await fetch("http://localhost:4000/sum?a="+a+"&b="+b, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                console.log(data);
+                document.getElementById('finalSum').innerHTML=data;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <input type = "text" placeholder="number 1" id="firstNumber"/>
+    <input type = "text" placeholder="number 2" id="secondNumber"/>
+    <button onclick="populateDivFromServer()">Sum</button>
+    <div id="finalSum"></div>
+</body>
+</html>
