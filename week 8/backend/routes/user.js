@@ -8,6 +8,7 @@
 const express = require("express");
 const zod = requuire("zod");
 const User = require("../db");
+const {authMiddleware} = require("../middlewares")
 const router = express.Router();
 const app = express();
 
@@ -19,7 +20,7 @@ const signUpBody = zod.object({
     lastname : zod.string(),
 })
 
-app.post("signup",async function(req,res){
+router.post("signup",async function(req,res){
     const {success} = signUpBody.safeParse(req.body);
     if(!success){
         return res.status(411).json({
@@ -94,6 +95,74 @@ router.post("/signin", async (req, res) => {
 
     res.status(411).json({
         message: "Error while logging in"
+    })
+})
+
+const updateBody = zod.object({
+	password: zod.string().optional(),
+    firstName: zod.string().optional(),
+    lastName: zod.string().optional(),
+})
+
+// 3. Route to update user information
+// User should be allowed to `optionally` send either or all of
+
+//1. password
+//2. firstName
+//3. lastName
+
+//Whatever they send, we need to update it in the database for the user.
+//Use the `middleware` we defined in the last section to authenticate the user
+
+//Method: PUT
+//Route: /api/v1/user
+
+router.put("/", authMiddleware, async (req, res) => {
+    const { success } = updateBody.safeParse(req.body)
+    if (!success) {
+        res.status(411).json({
+            message: "Error while updating information"
+        })
+    }
+
+    await User.updateOne(req.body, {
+        _id: req.userId
+    })
+
+    res.json({
+        message: "Updated successfully"
+    })
+})
+
+//2. Route to get users from the backend, filterable via firstName/lastName
+// This is needed so users can search for their friends and send them money
+
+//Method: GET
+//Route: /api/v1/user/bulk
+//Query Parameter: `?filter=harkirat`
+
+router.get("/bulk", async (req, res) => {
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }]
+    })
+
+    res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
     })
 })
 
