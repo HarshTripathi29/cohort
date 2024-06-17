@@ -8,7 +8,8 @@
 const express = require("express");
 const zod = requuire("zod");
 const User = require("../db");
-const {authMiddleware} = require("../middlewares")
+const Account = require("../db");
+const {authMiddleware} = require("../middlewares");
 const router = express.Router();
 const app = express();
 
@@ -47,6 +48,13 @@ router.post("signup",async function(req,res){
     });
 
     const userId = user._id;
+
+    //initialize balances on signup. 
+    Account.create({
+        userId,
+        balance : 1+Math.random()*1000,
+    })
+    //
 
     const token = jwt.sign({
         userId
