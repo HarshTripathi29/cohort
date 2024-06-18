@@ -1,0 +1,58 @@
+.create-todo{
+    border : 1px solid white;
+    padding : 50px;
+    border-radius : 10px;
+    width : 60%;
+    }
+    
+    .create-todo input{
+        border : 1px solid white;
+        margin : 0px 10px 0px 0px;
+    }
+    
+    .button{
+        background-color: white;
+        color : #121212;
+        border : 1px solid white;
+    }
+    
+    
+.todo-list{
+    border : none;
+    padding : 50px;
+    border-radius : 10px;
+    width : 60%;
+    margin-top: 20px;
+}
+
+.list{
+    background-color: #121212;
+    color : white;
+}
+
+
+.item{
+    display: flex;
+    flex-direction: row;
+}
+
+.signup-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-form input{
+    margin : 5px;
+    width : 20vw;
+    padding : 10px 0px;
+}
+
+.signup-form button{
+    width : 20vw;
+    background-color: white;
+    color : #121212;
+    padding : 10px;
+    border : 1px solid white;
+}
