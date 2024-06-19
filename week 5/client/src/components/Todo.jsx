@@ -17,9 +17,9 @@ const Todo = ({list, onDelete }) => {
         <div className='list'>
           <ol>
             {list && list.map((item, index) => (
-              <div className='item' key={index}>
+              <div className='item' key={item.id}>
                 <li className='item'>{index + 1}. {item.title}</li>
-                <button className='button' onClick={() => handleDelete(index)}>Delete</button>
+                <button className='button' onClick={() => handleDelete(item._id)}>Delete</button>
               </div>
             ))}
           </ol>

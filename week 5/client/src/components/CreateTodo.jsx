@@ -27,13 +27,21 @@ const CreateTodo = () => {
         setTodo(e.target.value);
         setTitle(e.target.value);
     }
-
     
-    const handleDelete=(index)=>{
-        setTodoList(todoList.filter((_,i)=>i!=index))
-        console.log("after deletion", todoList);
-    }
-
+    const handleDelete = async (todoId) => {
+      try {
+        console.log(`Deleting todo with ID: ${todoId}`);
+        const response = await axios.delete(`http://localhost:3000/api/v1/todo/todos/${todoId}`);
+        if (response.status === 200) {
+          setTodoList(todoList.filter(todo => todo._id !== todoId));
+        } else {
+          console.error('Error deleting todo:', response);
+        }
+        console.log('After deletion', todoList);
+      } catch (error) {
+        console.error('Error deleting todo:', error);
+      }
+    };
   return (
     <div>
     <h1>ToDo</h1>
