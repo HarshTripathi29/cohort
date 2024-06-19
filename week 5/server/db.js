@@ -9,6 +9,11 @@ const userSchema = new mongoose.Schema({
     password : String,
 });
 
-const User = mongoose.model('User', userSchema);
+const todoSchema = new mongoose.Schema({
+    title : String,
+}) 
 
-module.exports=User;
+const User = mongoose.model('User', userSchema);
+const Todo = mongoose.model('Todo', todoSchema);
+
+module.exports={User, Todo};

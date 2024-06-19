@@ -1,6 +1,6 @@
 const express = require("express");
 const zod = require("zod");
-const User = require("../db");  // Ensure the correct path to your User model
+const {User} = require("../db");  // Ensure the correct path to your User model
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
