@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 
-mongoose.db("mongodb+srv://harshtripathi042:harsh123@cluster0.etqbz6r.mongodb.net/");
+mongoose.connect("mongodb+srv://harshtripathi042:harsh123@cluster0.etqbz6r.mongodb.net/todo_app");
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
     username : String,
     firstname : String,
     lastname : String,
     password : String,
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
-module.exports={User}
+module.exports=User;

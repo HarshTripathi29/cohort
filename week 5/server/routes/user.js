@@ -1,60 +1,75 @@
 const express = require("express");
 const zod = require("zod");
-const User = require("./db");
+const User = require("../db");  // Ensure the correct path to your User model
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const router = express.router();
+const router = express.Router();
 const jwtsecret = "harsh";
 
 const signUpBody = zod.object({
-    username : zod.string(),
-    firstName : zod.string(),
-    lastName : zod.string(),
-    password : zod.string().min(6)
-})
+    username: zod.string(),
+    firstName: zod.string(),
+    lastName: zod.string(),
+    password: zod.string().min(6)
+});
 
-router.post("/signup", function(req,res){
-
-    const {success} = signUpBody.safeParse(req.body);
-    if(!success){
+router.post("/signup", async function(req, res) {
+    const { success, error } = signUpBody.safeParse(req.body);
+    if (!success) {
         return res.status(411).json({
-            msg : "invalid credentials"
-        })
+            msg: "invalid credentials",
+            error: error.errors // Send validation errors to the client
+        });
     }
 
-    const existingUser = User.findOne({
-        username : req.body.username,
-    })
-
-    if(existingUser){
-        return res.status(411).json({
-            msg : "User already registered"
-        })
+    let existingUser;
+    try {
+        existingUser = await User.findOne({
+            username: req.body.username,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            msg: "Error checking for existing user"
+        });
     }
 
-    User.create({
-        username : req.body.username,
-        firstName : req.body.firstName,
-        lastName : req.body.lastName,
-        password : req.body.password,
-    })
+    if (existingUser) {
+        return res.status(409).json({
+            msg: "User already registered"
+        });
+    }
 
-    const userId = User._id;
+    let user;
+    try {
+        user = await User.create({
+            username: req.body.username,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            password: req.body.password,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            msg: "Error creating user"
+        });
+    }
 
-    const token = jwt.sign({userId}, jwtsecret);
+    const userId = user._id;
+    const token = jwt.sign({ userId }, jwtsecret);
 
     return res.status(200).json({
-        msg : "User successfully registered",
+        msg: "User successfully registered",
         token
-
-    })
-})
+    });
+});
 
 const signInBody = zod.object({
     username : zod.string(),
-    password : zod.password(),
+    password : zod.string().min(6),
 })
 
-router.post("/signin",function(req,res){
+router.post("/signin",async function(req,res){
     const {success} = signInBody.safeParse(req.body);
     if(!success)
         {
@@ -63,7 +78,7 @@ router.post("/signin",function(req,res){
             })
         }
     
-    const userExists = User.findOne({
+    const userExists = await User.findOne({
         username : req.body.username,
         password : req.body.password,
     })
@@ -77,9 +92,10 @@ router.post("/signin",function(req,res){
     
     const userId = User._id;
 
+    let token;
     if(userExists)
         {
-            const token = jwt.jwt({userId}, jwtsecret);
+            token = jwt.sign({userId}, jwtsecret);
 
         }
 
