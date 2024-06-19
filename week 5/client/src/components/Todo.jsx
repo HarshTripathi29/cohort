@@ -14,7 +14,7 @@ const Todo = ({list, onDelete}) => {
       <ol>
         {list.map((item, index)=>(
             <div className='item'>
-            <li key={index} className='item'>{index+1} { }.{item}</li>
+            <li key={index} className='item'>{index+1}.{item}</li>
             <button className='button' onClick={()=>{handleDelete(index)}}>Delete</button>
             </div>
         ))}
